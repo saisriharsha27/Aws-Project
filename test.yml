@@ -4,15 +4,33 @@ Resources:
   primer:
     Type: AWS::Lambda::Function
     Properties:
-      Runtime: python3.7
-      FunctionName: !Ref testfunction
+      Runtime: nodejs12.x
       Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
-      Handler: index.my_handler
+      Handler: index.handler
       Code:
         ZipFile: |
-          def my_handler(event,context):
-              message = 'Hello Lambda'
-              return message
+          var aws = require('aws-sdk')
+          var response = require('cfn-response')
+          exports.handler = function(event, context) {
+              console.log("REQUEST RECEIVED:\n" + JSON.stringify(event))
+              // For Delete requests, immediately send a SUCCESS response.
+              if (event.RequestType == "Delete") {
+                  response.send(event, context, "SUCCESS")
+                  return
+              }
+              var responseStatus = "FAILED"
+              var responseData = {}
+              var functionName = event.ResourceProperties.FunctionName
+              var lambda = new aws.Lambda()
+              lambda.invoke({ FunctionName: functionName }, function(err, invokeResult) {
+                  if (err) {
+                      responseData = {Error: "Invoke call failed"}
+                      console.log(responseData.Error + ":\n", err)
+                  }
+                  else responseStatus = "SUCCESS"
+                  response.send(event, context, responseStatus, responseData)
+              })
+          }
       Description: Invoke a function during stack creation.
       TracingConfig:
         Mode: Active
