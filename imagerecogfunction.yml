@@ -5,6 +5,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Runtime: python3.7
+      FunctionName: !Ref testfunction
       Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
       Handler: index.handler
       Code:

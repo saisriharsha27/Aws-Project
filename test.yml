@@ -15,13 +15,11 @@ Resources:
   S3TriggeredLambdaHandler:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: ./test.yml
       
       Handler: lambda.handler
       Description: Function that is called when a file is stored in S3.
       Runtime: python3.7
-      Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
-      Codeuri: .
- 
       Events:
         S3Bucket:
           Type: S3
