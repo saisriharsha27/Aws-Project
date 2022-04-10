@@ -5,7 +5,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Runtime: nodejs12.x
-      FunctionName: !Ref testfunctionwithcloudformation
+      FunctionName: testfunctionwithcloudformation
       Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
       Handler: index.handler
       Code:
