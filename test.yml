@@ -4,34 +4,14 @@ Resources:
   primer:
     Type: AWS::Lambda::Function
     Properties:
-      Runtime: nodejs12.x
-      FunctionName: testfunctionwithcloudformation
+      Runtime: python3.7
+      FunctionName: image-clog-recogusingyml
       Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
       Handler: index.handler
-      Code:
-        ZipFile: |
-          var aws = require('aws-sdk')
-          var response = require('cfn-response')
-          exports.handler = function(event, context) {
-              console.log("REQUEST RECEIVED:\n" + JSON.stringify(event))
-              // For Delete requests, immediately send a SUCCESS response.
-              if (event.RequestType == "Delete") {
-                  response.send(event, context, "SUCCESS")
-                  return
-              }
-              var responseStatus = "FAILED"
-              var responseData = {}
-              var functionName = event.ResourceProperties.FunctionName
-              var lambda = new aws.Lambda()
-              lambda.invoke({ FunctionName: functionName }, function(err, invokeResult) {
-                  if (err) {
-                      responseData = {Error: "Invoke call failed"}
-                      console.log(responseData.Error + ":\n", err)
-                  }
-                  else responseStatus = "SUCCESS"
-                  response.send(event, context, responseStatus, responseData)
-              })
-          }
+      Code: 
+        S3Bucket: uploadbucketrecog
+        S3Key: lambda_function.zip
+          
       Description: Invoke a function during stack creation.
       TracingConfig:
         Mode: Active
