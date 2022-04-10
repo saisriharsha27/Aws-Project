@@ -1,37 +1,18 @@
-AWSTemplateFormatVersion: 2010-09-09
-Transform: AWS::Serverless-2016-10-31
-Globals:
-  Function:
-    MemorySize: 128
-    Timeout: 15
-
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda function with cfn-response.
 Resources:
-
-  # S3 Bucket
-  S3Bucket:
-    Type: AWS::S3::Bucket
-
-  # Functions
-  S3TriggeredLambdaHandler:
-    Type: AWS::Serverless::Function
+  primer:
+    Type: AWS::Lambda::Function
     Properties:
-      CodeUri: ./test.yml
-      
-      Handler: lambda.handler
-      Description: Function that is called when a file is stored in S3.
       Runtime: python3.7
-      Events:
-        S3Bucket:
-          Type: S3
-          Properties:
-            Bucket: !Ref image-rekog-lambdafunction
-            Events: 's3:ObjectCreated:*'
-
-  # Permissions
-  AllowS3ToCallLambdaPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: 'lambda:InvokeFunction'
-      FunctionName: !Ref S3TriggeredLambdaHandler
-      Principal: s3.amazonaws.com
-      SourceArn: !GetAtt S3Bucket.Arn
+      FunctionName: !Ref testfunction
+      Role: arn:aws:iam::786051835021:role/Recognition-S3-Cloudwatch
+      Handler: index.my_handler
+      Code:
+        ZipFile: |
+          def my_handler(event,context):
+              message = 'Hello Lambda'
+              return message
+      Description: Invoke a function during stack creation.
+      TracingConfig:
+        Mode: Active
