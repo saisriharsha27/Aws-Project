@@ -29,7 +29,7 @@ Resources:
         S3Bucket:
           Type: S3
           Properties:
-            Bucket: image-rekog-lambdafunction
+            Bucket: mystackbuckettest
             Events: 's3:ObjectCreated:*'
 
   # Permissions
